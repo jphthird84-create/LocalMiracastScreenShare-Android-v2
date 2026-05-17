@@ -37,29 +37,22 @@ warn () {
     echo "$*"
 }
 
-die () {
-    echo
-    echo "$*"
-    echo
-    exit 1
-}
-
-# OS specific support (must be 'true' or 'false').
+# OS specific support.  $var must be set to either true or false.
 cygwin=false
 darwin=false
 msys=false
 nonstop=false
 case "`uname`" in
-  CYGWIN*)
+  CYGWIN* )
     cygwin=true
     ;;
-  Darwin*)
+  Darwin* )
     darwin=true
     ;;
-  MINGW*)
+  MINGW* )
     msys=true
     ;;
-  NONSTOP*)
+  NONSTOP* )
     nonstop=true
     ;;
 esac
@@ -88,7 +81,7 @@ Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
 
-# Increase the maximum file descriptors if needed.
+# Increase the maximum file descriptors if needed
 if [ "$cygwin" = "false" -a "$darwin" = "false" -a "$nonstop" = "false" ] ; then
     MAX_FD_LIMIT=`ulimit -H -n`
     if [ $? -eq 0 ] ; then
@@ -104,26 +97,26 @@ if [ "$cygwin" = "false" -a "$darwin" = "false" -a "$nonstop" = "false" ] ; then
     fi
 fi
 
-# For Darwin, add options to specify how the application appears in the Dock
+# For Darwin, add options to specify how the application appears in the dock
 if $darwin; then
-    GRADLE_OPTS="$GRADLE_OPTS \"-Xdock:name=$APP_NAME\" \"-Xdock:icon=$APP_HOME/media/gradle.icns\""
+    GRADLE_OPTS="$GRADLE_OPTS \"-Xdock_name=$APP_NAME\" \"-Xdock_icon=$APP_HOME/media/gradle.icns\""
 fi
 
 # For Cygwin or MSYS, switch paths to Windows format before running java
-if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
+if $cygwin || $msys ; then
     APP_HOME=`cygpath --path --mixed "$APP_HOME"`
     CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
     JAVACMD=`cygpath --unix "$JAVACMD"`
 
     # We build the pattern for arguments to be converted via cygpath
-    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`
-    ROOTDIRS=`echo "$ROOTDIRSRAW" | sed -e 's| |\ |g'`
-    APP_HOME=`echo "$APP_HOME" | sed -e "s|$ROOTDIRS||"`
+    ROOTDIRSRAW=`find -L / -maxdepth 1 -type d 2>/dev/null`
+    SEP=""
+    for dir in $ROOTDIRSRAW ; do
+        ROOTDIRS="$ROOTDIRS$SEP$dir"
+        SEP=":"
+    done
+    OURCYGPATTERN="$OURCYGPATTERN\($ROOTDIRS\)"
 fi
 
-# Split up the JVM options into an array for easier iteration.
-# The following is a simplified version that only handles simple cases.
-JVM_OPTS_ARRAY=($DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS)
-
-# Execute Gradle
-exec "$JAVACMD" "${JVM_OPTS_ARRAY[@]}" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+# Prepare the command line
+exec "$JAVACMD" $JAVA_OPTS $GRADLE_OPTS -Dorg.gradle.appname="$APP_BASE_NAME" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
