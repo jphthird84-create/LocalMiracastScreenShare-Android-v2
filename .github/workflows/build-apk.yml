@@ -1,9 +1,10 @@
-name: Build Debug APK
+name: Build Android APK
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:  # allows manual trigger from GitHub UI
+    branches: [ main ]
+  release:
+    types: [ created ]
 
 jobs:
   build:
@@ -20,24 +21,24 @@ jobs:
           distribution: 'temurin'
 
       - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+        run: chmod +x ./gradlew
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
-      - name: Build debug APK
-        run: ./gradlew assembleDebug --stacktrace
-
-      - name: Upload APK artifact
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 7
+          name: LocalMiracastScreenShare-Debug
+          path: app/build/outputs/apk/debug/*.apk
+
+      - name: Build Release APK (on release)
+        if: github.event_name == 'release'
+        run: ./gradlew assembleRelease
+
+      - name: Upload Release APK
+        if: github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: LocalMiracastScreenShare-Release
+          path: app/build/outputs/apk/release/*.apk
