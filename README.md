@@ -1,3 +1,9 @@
-## LocalMiracastScreenShare-Android-v2
+# LocalMiracastScreenShare-Android-v2
 
-With full Shizuku support added.
+Advanced local screen sharing app with AirPlay, Chromecast, WebRTC, and optimized MediaCodec support.
+
+## Features
+- Aggressive Snapdragon optimizations
+- Dynamic buffer pool
+- Cast to Any
+- Receiver with PiP
